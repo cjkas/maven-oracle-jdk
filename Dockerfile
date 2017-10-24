@@ -1,5 +1,4 @@
 FROM debian:stretch
-USER root
 
 # Install tools
 RUN apt-get update
