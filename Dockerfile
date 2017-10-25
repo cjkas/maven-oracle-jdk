@@ -1,19 +1,18 @@
-FROM debian:stretch
+FROM alpine:3.6
 
-ENV DEBIAN_FRONTEND noninteractive
-
-# Install tools
-RUN apt-get update && apt-get install -y gnupg
+RUN apk add --no-cache git wget ttf-dejavu
 
 # Install JDK GIT MAVEN
-RUN echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee /etc/apt/sources.list.d/webupd8team-java.list
-RUN echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee -a /etc/apt/sources.list.d/webupd8team-java.list
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886
-RUN echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | /usr/bin/debconf-set-selections
-RUN apt-get update
-RUN apt-get install -y oracle-java8-installer git maven
+RUN wget -O /root/jdk-8u151-linux-x64.tar.gz -q --no-check-certificate -c --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz
+RUN mkdir /usr/java && cd /usr/java && tar x -C /usr/java -f /root/jdk-8u151-linux-x64.tar.gz && rm /root/jdk-8u151-linux-x64.tar.gz
+ENV JAVA_HOME /usr/java/jdk1.8.0_151
+ENV PATH ${JAVA_HOME}/bin:${PATH}
+
+RUN mkdir /opt && cd /opt && wget -q http://www-eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz && tar xzf apache-maven-3.3.9-bin.tar.gz && rm apache-maven-3.3.9-bin.tar.gz
+RUN ln -s /opt/apache-maven-3.3.9 /opt/maven
+ENV PATH /opt/maven/bin:${PATH}
 
 # create working directory
 RUN mkdir -p /local/git
 WORKDIR /local/git
-CMD ["/bin/bash"]
+CMD [ "/bin/bash", "-l"]
