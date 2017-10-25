@@ -21,7 +21,11 @@ RUN ln -s /opt/apache-maven-3.5.2 /opt/maven
 ENV M2_HOME /opt/maven
 ENV PATH ${M2_HOME}/bin:${PATH}
 
-# create working directory
+# Test 
+RUN mvn --version
+RUN java -version
+
+# Create working directory
 RUN mkdir -p /local/git
 WORKDIR /local/git
 CMD [ "/bin/bash", "-l"]
