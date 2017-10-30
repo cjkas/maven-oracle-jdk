@@ -3,11 +3,11 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Install tools
 RUN apt-get update
+RUN apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common
 RUN apt-get install -y wget git procps
 
 # Install and configure JDK
 RUN wget -q --no-check-certificate -c --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz
-RUN ls
 RUN mkdir /usr/java && cd /usr/java && tar x -C /usr/java -f /jdk-8u151-linux-x64.tar.gz && rm /jdk-8u151-linux-x64.tar.gz
 RUN update-alternatives --install /usr/bin/java java /usr/java/jdk1.8.0_151/bin/java 100
 RUN update-alternatives --install /usr/bin/javac javac /usr/java/jdk1.8.0_151/bin/javac 100
@@ -21,9 +21,19 @@ RUN ln -s /opt/apache-maven-3.5.2 /opt/maven
 ENV M2_HOME /opt/maven
 ENV PATH ${M2_HOME}/bin:${PATH}
 
+RUN curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | apt-key add -
+RUN add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
+   $(lsb_release -cs) \
+   stable"
+RUN apt-get update
+RUN apt-get install -y docker-ce
+
 # Test 
 RUN mvn --version
 RUN java -version
+
+RUN rm -fr /var/lib/apt/lists/*
 
 # Create working directory
 RUN mkdir -p /local/git
