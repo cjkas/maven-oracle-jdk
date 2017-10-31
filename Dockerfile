@@ -33,6 +33,7 @@ RUN apt-get install -y docker-ce
 RUN mvn --version
 RUN java -version
 
+RUN mkdir /.docker && chmod 777 /.docker
 RUN rm -fr /var/lib/apt/lists/*
 
 # Create working directory
