@@ -14,6 +14,7 @@ RUN update-alternatives --install /usr/bin/javac javac /usr/java/jdk1.8.0_161/bi
 
 ENV JAVA_HOME /usr/java/jdk1.8.0_161
 ENV PATH ${JAVA_HOME}/bin:${PATH}
+RUN ln -s $JAVA_HOME /usr/java/latest 
 
 # Install and configure Maven
 RUN cd /opt && wget -q http://www-eu.apache.org/dist/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz && tar xzf apache-maven-3.5.2-bin.tar.gz && rm apache-maven-3.5.2-bin.tar.gz
